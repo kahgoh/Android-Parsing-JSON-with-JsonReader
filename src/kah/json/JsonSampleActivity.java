@@ -18,6 +18,13 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+/**
+ * Activity parsing the sample JSON data from the Bureau of Meteorology
+ * (http://www.bom.gov.au) and displays it in a table on the screen, using
+ * {@link JsonReader}.
+ * 
+ * @author Kah
+ */
 public class JsonSampleActivity extends Activity {
 	/** Called when the activity is first created. */
 	@Override
@@ -145,6 +152,15 @@ public class JsonSampleActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Loads the next observation into the given table.
+	 * 
+	 * @param reader
+	 *            the {@link JsonReader} containing the observation
+	 * @param row
+	 *            the row to place the data in
+	 * @throws IOException
+	 */
 	private void parseData(JsonReader reader, View row) throws IOException {
 		int columnId = toRowId(reader.nextName());
 
@@ -156,6 +172,14 @@ public class JsonSampleActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Provides the id of the cell for a given field in the observation data.
+	 * 
+	 * @param name
+	 *            the name of the observation field
+	 * @return the id of the cell that the field should be placed in or -1, if
+	 *         the field should not be added to the row
+	 */
 	private int toRowId(String name) {
 		if (name.equals("local_date_time_full")) {
 			return R.id.localTime;
@@ -167,6 +191,17 @@ public class JsonSampleActivity extends Activity {
 		return -1;
 	}
 
+	/**
+	 * Consumes data from the given {@link JsonReader} until the array with the
+	 * given name is found.
+	 * 
+	 * @param reader
+	 *            the instance of {@link JsonReader} for reading the JSON data
+	 * @param objectName
+	 *            the name of the array to find
+	 * @return {@code true} if the array was found, otherwise {@code false}
+	 * @throws IOException
+	 */
 	private boolean findArray(JsonReader reader, String objectName)
 			throws IOException {
 		while (findNextTokenType(reader, JsonToken.NAME)) {
@@ -183,6 +218,18 @@ public class JsonSampleActivity extends Activity {
 		return false;
 	}
 
+	/**
+	 * Consumes data from the given {@link JsonReader} until the next occurrence
+	 * of the given token type is found.
+	 * 
+	 * @param reader
+	 *            the data to consume from
+	 * @param type
+	 *            the type of token to find
+	 * @return {@code true} if the next occurrence was found, otherwise
+	 *         {@code false}
+	 * @throws IOException
+	 */
 	private boolean findNextTokenType(JsonReader reader, JsonToken type)
 			throws IOException {
 
@@ -199,6 +246,15 @@ public class JsonSampleActivity extends Activity {
 		return false;
 	}
 
+	/**
+	 * Consumes tokens from the reader.
+	 * 
+	 * @param reader
+	 *            the instance of the reader
+	 * @param type
+	 *            the type of token to expect
+	 * @throws IOException
+	 */
 	private void consume(JsonReader reader, JsonToken type) throws IOException {
 		switch (type) {
 		case BEGIN_ARRAY:
